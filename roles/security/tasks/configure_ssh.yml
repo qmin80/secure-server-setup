@@ -1,0 +1,61 @@
+---
+
+- name: Disable port 22 on ssh config
+  lineinfile:
+    dest: '/etc/ssh/sshd_config'
+    regex: '^Port 22'
+    line: 'Port {{ ssh_port }}'
+    state: present
+    create: true
+
+- name: Disable root login over SSH
+  lineinfile:
+    dest: '/etc/ssh/sshd_config'
+    regexp: '^PermitRootLogin'
+    line: 'PermitRootLogin no'
+    state: present
+  when: disable_root|default(true)|bool == true
+
+- name: Disable password login
+  lineinfile:
+    dest: '/etc/ssh/sshd_config'
+    regexp: '^PasswordAuthentication'
+    line: 'PasswordAuthentication no'
+    state: present
+
+
+- name: Copy user pubkey 
+  copy:
+    src: "{{ ssh_pubkey_user }}"
+    dest: "/tmp/ssh_pubkey_user.pub"  
+
+- name: Add user pubkey into authorized_keys
+  shell: "cat /tmp/ssh_pubkey_user.pub >> /home/{{ deployment_user }}/.ssh/authorized_keys"
+  register: addtoauth
+
+- name: Remove user pubkey tmp
+  file:
+    path: /tmp/ssh_pubkey_user.pub
+    state: absent 
+
+
+- name: Copy ansible pubkey 
+  copy:
+    src: "{{ ssh_pubkey_ansible }}"
+    dest: "/tmp/ssh_pubkey_ansible.pub"  
+
+- name: Add ansible pubkey into authorized_keys
+  shell: "cat /tmp/ssh_pubkey_ansible.pub >> /home/{{ deployment_user }}/.ssh/authorized_keys"
+  register: addtoauth
+
+- name: Remove ansible pubkey tmp
+  file:
+    path: /tmp/ssh_pubkey_ansible.pub
+    state: absent 
+
+
+- name: Restart SSH
+  service:
+    name: ssh
+    state: restarted
+  changed_when: false

@@ -8,7 +8,7 @@
 - name: Add ansible authorized key
   authorized_key:
     user: ansible
-    key: "{{ lookup('file', '~/.ssh/ansible_id_rsa.pub') }}"
+    key: "{{ lookup('file', '~/.ssh/bharvest-ansible.pub') }}"
     exclusive: yes
 
 - name: Allow sudo for ansible
@@ -17,17 +17,17 @@
     dest: /etc/sudoers.d/ansible
     mode: '0600'
 
-- name: Create administrator user
-  user:
-    name: '{{ deployment_user }}'
-    comment: 'admin user'
-    shell: /bin/bash
-
-- name: Add administrator authorized key
-  authorized_key:
-    user: '{{ deployment_user }}'
-    key: "{{ lookup('file', '~/.ssh/id_rsa.pub') }}"
-    exclusive: yes
+# - name: Create administrator user
+#   user:
+#     name: '{{ deployment_user }}'
+#     comment: 'admin user'
+#     shell: /bin/bash
+# 
+# - name: Add administrator authorized key
+#   authorized_key:
+#     user: '{{ deployment_user }}'
+#     key: "{{ lookup('file', '~/.ssh/id_rsa.pub') }}"
+#     exclusive: yes
 
 - name: Allow sudo for administrator
   copy:

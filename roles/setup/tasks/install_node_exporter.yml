@@ -38,3 +38,13 @@
     daemon_reload: yes
     enabled: yes
   changed_when: false
+
+- name: remove node exporter directory
+  file:
+    path: '/tmp/node_exporter-{{ node_exporter_version }}.linux-amd64'
+    state: absent
+
+- name: remove node exporter file
+  file:
+    path: '/tmp/node_exporter-{{ node_exporter_version }}.linux-amd64.tar.gz'
+    state: absent

@@ -2,17 +2,29 @@
 192.168.0.20
 
 [all:vars]
-ansible_ssh_user=root
+ansible_ssh_user="SSH_USER"
+#ansible_ssh_pass="SSH_USER_PASSWORD"
+#ansible_ssh_become_pass="SUDO_PASSWORD"
 ansible_ssh_private_key_file="~/.ssh/id_rsa"
 
 hostname="SERVER_NAME"
 deployment_user="USER_NAME"
-ssh_port=22222
+
+# SSH
+ssh_port=22
 disable_root=true
+
+# SSH Source IP
+ssh_source_control=BASTION_IP
+ssh_source_ansible=ANSIBLE_SERVER_IP
+
+# SSH Pubkey File
+ssh_pubkey_user="USER_PUBKEY_PATH"
+ssh_pubkey_ansible="ANSIBLE_PUBKEY_PATH"
 
 # Golang
 go=false
-go_version='1.17.11'
+go_version='1.18.3'
 
 # Node Exporter
 node_exporter=false

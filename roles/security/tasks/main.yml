@@ -1,66 +1,16 @@
 ---
-- name: install ufw
-  apt:
-    name: ufw
-    state: present
-    update_cache: yes
+- name: Install fail2ban
+  tags: Install fail2ban
+  import_tasks: install_fail2ban.yml
 
-- name: ufw already enabled
-  command: ufw status verbose
-  register: ufw_status_result
-  changed_when: False
+- name: Configure SSH
+  tags: Configure SSH
+  import_tasks: configure_ssh.yml
 
-- name: install fail2ban
-  apt:
-    name: fail2ban
-    state: present
-    update_cache: yes
+- name: Install ufw
+  tags: Install ufw
+  import_tasks: install_ufw.yml
 
-- name: Restart fail2ban
-  service:
-    name: fail2ban
-    state: restarted
-  changed_when: false
-
-- name: open alternative ssh port
-  command: 'ufw allow {{ ssh_port }}/tcp'
-
-- name: close standard ssh port
-  command: ufw deny 22/tcp
-
-- name: Disable port 22 on ssh config
-  lineinfile:
-    dest: '/etc/ssh/sshd_config'
-    regex: '^Port 22'
-    line: 'Port {{ ssh_port }}'
-    state: present
-    create: true
-
-- name: Disable root login over SSH
-  lineinfile:
-    dest: '/etc/ssh/sshd_config'
-    regexp: '^PermitRootLogin'
-    line: 'PermitRootLogin no'
-    state: present
-  when: disable_root|default(true)|bool == true
-
-- name: Disable password login
-  lineinfile:
-    dest: '/etc/ssh/sshd_config'
-    regexp: '^PasswordAuthentication'
-    line: 'PasswordAuthentication no'
-    state: present
-
-- name: Restart SSH
-  service:
-    name: ssh
-    state: restarted
-  changed_when: false
-
-- name: enable firewall
-  shell: |
-    set -o pipefail
-    echo "y" | ufw enable
-  args:
-    executable: /bin/bash
-  when: not ufw_status_result.stdout is search("Status.* active")
+- name: Configure firewall
+  tags: Configure firewall
+  import_tasks: configure_firewall.yml

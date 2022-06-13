@@ -1,0 +1,36 @@
+---
+- name: enable firewall
+  shell: |
+    set -o pipefail
+    echo "y" | ufw enable
+  args:
+    executable: /bin/bash
+  when: not ufw_status_result.stdout is search("Status.* active")
+
+- name: Reset UFW
+  ufw: 
+    state: reset
+
+- name: Allow outgoing
+  ufw: 
+    default: allow
+    direction: outgoing
+
+- name: Disallow ingoing
+  ufw: 
+    default: deny
+    direction: incoming
+
+- name: Establish regular admin rules
+  ufw:
+    rule: allow
+    direction: in
+    port: '{{ ssh_port }}'
+    proto: tcp
+    from_ip: '{{ item }}'
+  loop:
+    - "{{ ssh_source_control }}"
+    - "{{ ssh_source_ansible }}"
+
+- name: close standard ssh port
+  command: ufw deny 22/tcp

@@ -14,10 +14,17 @@
 - name: Install essentials
   import_tasks: install_essentials.yml
 
+- name: Install go
+  tags: Install go
+  import_tasks: install_go.yml
+  when: go|default(false)|bool == true
+
 - name: Install node exporter
+  tags: Install node exporter
   import_tasks: install_node_exporter.yml
   when: node_exporter|default(false)|bool == true
 
 - name: Install promtail
+  tags: Install promtail
   import_tasks: install_promtail.yml
   when: promtail|default(false)|bool == true

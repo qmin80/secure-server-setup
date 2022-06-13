@@ -1,0 +1,33 @@
+---
+- name: download go file
+  get_url:
+    url: 'https://golang.org/dl/go{{ go_version }}.linux-amd64.tar.gz'
+    dest: '/tmp/go{{ go_version }}.linux-amd64.tar.gz'
+    mode: '0700'
+
+- name: unarchive go file
+  unarchive:
+    src: '/tmp/go{{ go_version }}.linux-amd64.tar.gz'
+    remote_src: yes
+    dest: '/tmp'
+
+- name: remove old go directory
+  file:
+    path: /usr/local/go
+    state: absent
+
+- name: move go directory to /usr/local
+  command: mv /tmp/go /usr/local/go
+
+- name: add go path to bash profile
+  shell: |
+    cat << ' EOF' >> /home/{{ deployment_user }}/.profile
+
+    export GOROOT=/usr/local/go
+    export GOPATH=$HOME/goApps
+    export PATH=$GOPATH/bin:$GOROOT/bin:$PATH
+
+- name: delete go file
+  file:
+    path: /tmp/go{{ go_version }}.linux-amd64.tar.gz
+    state: absent
