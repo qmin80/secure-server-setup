@@ -1,6 +1,6 @@
 ---
 - name: open node_exporter port
-  command: ufw allow 9100/tcp
+  command: ufw allow 59100/tcp
 
 - name: download node_exporter
   get_url:
@@ -19,16 +19,16 @@
     src: '/tmp/node_exporter-{{ node_exporter_version }}.linux-amd64/node_exporter'
     dest: '/usr/local/bin/'
     remote_src: true
-    owner: root
-    group: root
+    owner: ubuntu
+    group: ubuntu
     mode: '0755'
 
 - name: create node_exporter systemd unit
   copy:
     src: node_exporter.service
     dest: /etc/systemd/system/node_exporter.service
-    owner: root
-    group: root
+    owner: ubuntu
+    group: ubuntu
     mode: '0600'
 
 - name: start node_exporter service

@@ -8,7 +8,7 @@
 - name: Add ansible authorized key
   authorized_key:
     user: ansible
-    key: "{{ lookup('file', '~/.ssh/id_rsa.pub') }}"
+    key: "{{ lookup('file', '~/.ssh/ansible_id_rsa.pub') }}"
     exclusive: yes
 
 - name: Allow sudo for ansible

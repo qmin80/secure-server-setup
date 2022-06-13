@@ -10,6 +10,10 @@ deployment_user="USER_NAME"
 ssh_port=22222
 disable_root=true
 
+# Golang
+go=false
+go_version='1.17.11'
+
 # Node Exporter
 node_exporter=false
 node_exporter_version='1.2.2'

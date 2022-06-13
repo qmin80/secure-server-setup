@@ -2,8 +2,8 @@
 Description=Node Exporter
 
 [Service]
-User=root
-Group=root
+User=ubuntu
+Group=ubuntu
 ExecStart=/usr/local/bin/node_exporter
 
 Restart=always

@@ -54,8 +54,8 @@
   copy:
     src: 'promtail.service'
     dest: '/etc/systemd/system/promtail.service'
-    owner: root
-    group: root
+    owner: ubuntu
+    group: ubuntu
     mode: '0600'
 
 - name: start promtail service
